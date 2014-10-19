@@ -12,8 +12,8 @@ LDFLAGS = \
 
 INCLUDE_DIR = include
 SOURCE_DIR = src
-BUILD_DIR = build
-OBJECT_DIR = $(BUILD_DIR)/o
+BUILD_DIR = .
+OBJECT_DIR = $(BUILD_DIR)
 
 OBJECT_FILES = \
 	$(OBJECT_DIR)/cpu.o
@@ -26,7 +26,9 @@ all: $(BUILD_DIR)/libire.dylib $(BUILD_DIR)/ire
 
 
 clean:
-	find $(BUILD_DIR) -type f | xargs rm -v
+	rm $(BUILD_DIR)/libire.dylib
+	rm $(OBJECT_DIR)/ire.o $(BUILD_DIR)/ire
+	rm $(OBJECT_FILES)
 
 
 $(BUILD_DIR)/libire.dylib: $(OBJECT_FILES)
