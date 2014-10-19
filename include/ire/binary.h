@@ -6,9 +6,11 @@ IRE_API(ire_error_t) ire_binary_create(
     ire_data_t *data,
     ire_binary_t **destination);
 
+
 IRE_API(ire_error_t) ire_binary_create_from_file(
     FILE *stream,
     ire_binary_t **destination);
+
 
 IRE_API(ire_error_t) ire_binary_destroy(
     ire_binary_t **self);
