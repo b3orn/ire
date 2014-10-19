@@ -4,6 +4,12 @@
 typedef size_t ire_error_t;
 typedef uint8_t ire_opcode_t;
 
+
+typedef struct ire_code   ire_code_t;
+typedef struct ire_data   ire_data_t;
+typedef struct ire_binary ire_binary_t;
+
+
 typedef struct ire_cpu ire_cpu_t;
 
 
@@ -65,6 +71,31 @@ typedef union ire_instruction ire_instruction_t;
 typedef ire_error_t (*ire_instruction_handler_t)(
     ire_cpu_t *cpu,
     ire_instruction_t *instruction);
+
+
+struct ire_code {
+    uint16_t base;
+    uint16_t entry;
+    uint16_t stack_base;
+    uint16_t interrupt_base;
+    uint8_t interrupt_table[2048];
+    uint16_t size;
+    uint8_t data[];
+};
+
+
+struct ire_data {
+    uint16_t base;
+    uint16_t zero;
+    uint16_t size;
+    uint8_t data[];
+};
+
+
+struct ire_binary {
+    ire_code_t *code;
+    ire_data_t *data;
+};
 
 
 struct ire_cpu {

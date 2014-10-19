@@ -2,7 +2,7 @@ CC = clang
 LD = ld
 
 CCFLAGS = \
-	-Wall -Wextra -std=c99 -pedantic -ansi -fPIC \
+	-Wall -Wextra -std=c99 -pedantic -fPIC \
 	-DIRE_BUILD_SHARED \
 	-O0 -g
 
@@ -16,6 +16,7 @@ BUILD_DIR = .
 OBJECT_DIR = $(BUILD_DIR)
 
 OBJECT_FILES = \
+	$(OBJECT_DIR)/binary.o \
 	$(OBJECT_DIR)/cpu.o
 
 
@@ -40,6 +41,10 @@ $(BUILD_DIR)/ire: $(BUILD_DIR)/libire.dylib $(OBJECT_DIR)/ire.o
 
 
 $(OBJECT_DIR)/ire.o: $(SOURCE_DIR)/ire.c
+	$(CC) $(CCFLAGS) -I$(INCLUDE_DIR) -o $@ -c $+
+
+
+$(OBJECT_DIR)/binary.o: $(SOURCE_DIR)/binary.c
 	$(CC) $(CCFLAGS) -I$(INCLUDE_DIR) -o $@ -c $+
 
 
