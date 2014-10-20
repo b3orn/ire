@@ -78,7 +78,7 @@ struct ire_code {
     uint16_t entry;
     uint16_t stack_base;
     uint16_t interrupt_base;
-    uint8_t interrupt_table[2048];
+    uint16_t interrupt_table[1024];
     uint16_t size;
     uint8_t data[];
 };
