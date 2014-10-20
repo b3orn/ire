@@ -1,5 +1,6 @@
 CC = clang
 LD = ld
+AR = ar
 
 CCFLAGS = \
 	-Wall -Wextra -Weverything -std=c99 -pedantic -fPIC \
@@ -25,17 +26,22 @@ OBJECT_FILES = \
 .PHONY: all clean
 
 
-all: $(BUILD_DIR)/libire.dylib $(BUILD_DIR)/ire
+all: $(BUILD_DIR)/libire.dylib $(BUILD_DIR)/libire.a $(BUILD_DIR)/ire
 
 
 clean:
 	rm $(BUILD_DIR)/libire.dylib
+	rm $(BUILD_DIR)/libire.a
 	rm $(OBJECT_DIR)/ire.o $(BUILD_DIR)/ire
 	rm $(OBJECT_FILES)
 
 
 $(BUILD_DIR)/libire.dylib: $(OBJECT_FILES)
 	$(LD) $(LDFLAGS) -dylib -o $@ $+
+
+
+$(BUILD_DIR)/libire.a: $(OBJECT_FILES)
+	$(AR) rcs $@ $+
 
 
 $(BUILD_DIR)/ire: $(BUILD_DIR)/libire.dylib $(OBJECT_DIR)/ire.o
