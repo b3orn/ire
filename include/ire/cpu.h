@@ -15,4 +15,12 @@ IRE_API(ire_error_t) ire_cpu_load_argv(
     int argc,
     char **argv);
 
+
+IRE_API(ire_error_t) ire_cpu_run(
+    ire_cpu_t *self);
+
+
+IRE_API(ire_error_t) ire_cpu_step(
+    ire_cpu_t *self);
+
 #endif

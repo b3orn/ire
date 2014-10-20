@@ -87,3 +87,71 @@ ire_cpu_load_argv(ire_cpu_t *self, int argc, char **argv) {
 
     return IRE_OK;
 }
+
+
+IRE_API(ire_error_t)
+ire_cpu_run(ire_cpu_t *self) {
+    ire_error_t error;
+
+    if (self == NULL) {
+        return IRE_ERROR_NULL_POINTER;
+    }
+
+    for (;;) {
+        error = ire_cpu_step(self);
+
+        if (error != IRE_OK) {
+            return error;
+        }
+    }
+
+    return IRE_OK;
+}
+
+
+IRE_API(ire_error_t)
+ire_cpu_step(ire_cpu_t *self) {
+    ire_error_t error;
+    ire_opcode_t opcode;
+    ire_instruction_t *instruction;
+    ire_instruction_handler_t handler;
+    uint16_t rip;
+
+    if (self == NULL) {
+        return IRE_ERROR_NULL_POINTER;
+    }
+
+    opcode = 0;
+
+    rip = self->registers[IRE_RIP];
+
+    self->registers[IRE_RIP] += 2;
+
+    memcpy(&instruction, &(self->memory[rip]), 2);
+
+    switch (instruction->generic >> 14) {
+        case 0x00:
+            opcode = (instruction->generic >> 8) & 0xff;
+            break;
+
+        case 0x01:
+            opcode = (instruction->generic >> 8) & 0xfc;
+            break;
+
+        case 0x02:
+        case 0x03:
+            opcode = (instruction->generic >> 8) & 0xf8;
+            break;
+
+    }
+
+    handler = ire_instruction_handler_table[opcode];
+
+    error = handler(instruction, self);
+
+    if (error != IRE_OK) {
+        return error;
+    }
+
+    return IRE_OK;
+}

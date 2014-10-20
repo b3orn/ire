@@ -69,8 +69,8 @@ typedef struct ire_instruction_jmpi ire_instruction_jmpi_t;
 typedef union ire_instruction ire_instruction_t;
 
 typedef ire_error_t (*ire_instruction_handler_t)(
-    ire_cpu_t *cpu,
-    ire_instruction_t *instruction);
+    ire_instruction_t *instruction,
+    ire_cpu_t *cpu);
 
 
 struct ire_code {
