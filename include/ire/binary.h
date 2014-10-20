@@ -15,4 +15,8 @@ IRE_API(ire_error_t) ire_binary_create_from_file(
 IRE_API(ire_error_t) ire_binary_destroy(
     ire_binary_t **self);
 
+
+IRE_API(ire_error_t) ire_binary_validate(
+    ire_binary_t *self);
+
 #endif

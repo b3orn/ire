@@ -7,6 +7,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "ire/version.h"
 #include "ire/common.h"
 #include "ire/types.h"
 #include "ire/errors.h"

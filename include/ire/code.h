@@ -13,6 +13,11 @@ IRE_API(ire_error_t) ire_code_create(
     ire_code_t **destination);
 
 
+IRE_API(ire_error_t) ire_code_create_from_file(
+    FILE *stream,
+    ire_code_t **destination);
+
+
 IRE_API(ire_error_t) ire_code_destroy(
     ire_code_t **self);
 

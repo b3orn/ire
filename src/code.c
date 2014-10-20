@@ -36,6 +36,16 @@ ire_code_create(uint16_t base, uint16_t entry, uint16_t stack_base,
 
 
 IRE_API(ire_error_t)
+ire_code_create_from_file(FILE *stream, ire_code_t **destination) {
+    if (stream == NULL || destination == NULL) {
+        return IRE_ERROR_NULL_POINTER;
+    }
+
+    return IRE_ERROR_NOT_IMPLEMENTED;
+}
+
+
+IRE_API(ire_error_t)
 ire_code_destroy(ire_code_t **self) {
     if (self == NULL || *self == NULL) {
         return IRE_ERROR_NULL_POINTER;

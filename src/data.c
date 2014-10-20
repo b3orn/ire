@@ -29,6 +29,16 @@ ire_data_create(uint16_t base, uint16_t zero, uint16_t size, uint8_t *data,
 
 
 IRE_API(ire_error_t)
+ire_data_create_from_file(FILE *stream, ire_data_t **destination) {
+    if (stream == NULL || destination == NULL) {
+        return IRE_ERROR_NULL_POINTER;
+    }
+
+    return IRE_ERROR_NOT_IMPLEMENTED;
+}
+
+
+IRE_API(ire_error_t)
 ire_data_destroy(ire_data_t **self) {
     if (self == NULL || *self == NULL) {
         return IRE_ERROR_NULL_POINTER;

@@ -9,6 +9,11 @@ IRE_API(ire_error_t) ire_data_create(
     ire_data_t **destination);
 
 
+IRE_API(ire_error_t) ire_data_create_from_file(
+    FILE *stream,
+    ire_data_t **destination);
+
+
 IRE_API(ire_error_t) ire_data_destroy(
     ire_data_t **self);
 
