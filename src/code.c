@@ -69,6 +69,8 @@ ire_code_create_from_file(FILE *stream, ire_code_t **destination) {
         return feof(stream) ? IRE_ERROR_END_OF_FILE : IRE_ERROR_IO;
     }
 
+    *destination = self;
+
     return IRE_OK;
 }
 
