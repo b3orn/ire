@@ -55,3 +55,35 @@ ire_cpu_destroy(ire_cpu_t **self) {
 
     return IRE_OK;
 }
+
+
+IRE_API(ire_error_t)
+ire_cpu_load_argv(ire_cpu_t *self, int argc, char **argv) {
+    uint16_t rsp, tmp;
+    size_t size;
+    int i;
+
+    if (self == NULL || argv == NULL) {
+        return IRE_ERROR_NULL_POINTER;
+    }
+
+    rsp = self->registers[IRE_RSP];
+
+    for (i = argc - 1; i >= 0; --i) {
+        size = strlen(argv[i]) + 1;
+
+        rsp -= size;
+
+        memcpy(&(self->memory[rsp]), argv[i], size);
+    }
+
+    rsp -= sizeof(uint16_t);
+
+    tmp = (uint16_t)argc;
+
+    memcpy(&(self->memory[rsp]), &tmp, sizeof(tmp));
+
+    self->registers[IRE_RSP] = rsp;
+
+    return IRE_OK;
+}
