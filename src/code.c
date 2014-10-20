@@ -25,7 +25,10 @@ ire_code_create(uint16_t base, uint16_t entry, uint16_t stack_base,
     self->size = size;
 
     memset(self->interrupt_table, 0, sizeof(self->interrupt_table));
-    memcpy(self->interrupt_table, interrupt_table, interrupt_size);
+
+    if (interrupt_size > 0) {
+        memcpy(self->interrupt_table, interrupt_table, interrupt_size);
+    }
 
     memcpy(self->data, data, size);
 
