@@ -16,6 +16,11 @@ IRE_API(ire_error_t) ire_binary_destroy(
     ire_binary_t **self);
 
 
+IRE_API(ire_error_t) ire_binary_write_to_file(
+    ire_binary_t *self,
+    FILE *stream);
+
+
 IRE_API(ire_error_t) ire_binary_validate(
     ire_binary_t *self);
 

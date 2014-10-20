@@ -21,4 +21,9 @@ IRE_API(ire_error_t) ire_code_create_from_file(
 IRE_API(ire_error_t) ire_code_destroy(
     ire_code_t **self);
 
+
+IRE_API(ire_error_t) ire_code_write_to_file(
+    ire_code_t *self,
+    FILE *stream);
+
 #endif

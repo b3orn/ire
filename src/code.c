@@ -50,7 +50,7 @@ ire_code_create_from_file(FILE *stream, ire_code_t **destination) {
     size = fread(&tmp, sizeof(tmp), 1, stream);
 
     if (size != 1) {
-        return feof(stream) ? IRE_ERROR_END_OF_FILE : IRE_ERROR_IO;
+        return feof(stream) ? IRE_ERROR_END_OF_FILE : IRE_ERROR_FILE_READ;
     }
 
     self = malloc(sizeof(*self) + tmp.size);
@@ -66,7 +66,7 @@ ire_code_create_from_file(FILE *stream, ire_code_t **destination) {
     if (size != self->size) {
         free(self);
 
-        return feof(stream) ? IRE_ERROR_END_OF_FILE : IRE_ERROR_IO;
+        return feof(stream) ? IRE_ERROR_END_OF_FILE : IRE_ERROR_FILE_READ;
     }
 
     *destination = self;
@@ -84,6 +84,30 @@ ire_code_destroy(ire_code_t **self) {
     free(*self);
 
     *self = NULL;
+
+    return IRE_OK;
+}
+
+
+IRE_API(ire_error_t)
+ire_code_write_to_file(ire_code_t *self, FILE *stream) {
+    size_t size;
+
+    if (self == NULL || stream == NULL) {
+        return IRE_ERROR_NULL_POINTER;
+    }
+
+    size = fwrite(self, sizeof(*self), 1, stream);
+
+    if (size != 1) {
+        return IRE_ERROR_FILE_WRITE;
+    }
+
+    size = fwrite(self->data, 1, self->size, stream);
+
+    if (size != self->size) {
+        return IRE_ERROR_FILE_WRITE;
+    }
 
     return IRE_OK;
 }

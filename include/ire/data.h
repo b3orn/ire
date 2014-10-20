@@ -17,4 +17,9 @@ IRE_API(ire_error_t) ire_data_create_from_file(
 IRE_API(ire_error_t) ire_data_destroy(
     ire_data_t **self);
 
+
+IRE_API(ire_error_t) ire_data_write_to_file(
+    ire_data_t *self,
+    FILE *stream);
+
 #endif
