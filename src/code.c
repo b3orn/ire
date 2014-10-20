@@ -37,11 +37,39 @@ ire_code_create(uint16_t base, uint16_t entry, uint16_t stack_base,
 
 IRE_API(ire_error_t)
 ire_code_create_from_file(FILE *stream, ire_code_t **destination) {
+    ire_code_t *self;
+    ire_code_t tmp;
+    size_t size;
+
     if (stream == NULL || destination == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
 
-    return IRE_ERROR_NOT_IMPLEMENTED;
+    tmp = (ire_code_t){0, 0, 0, 0, {0}, 0};
+
+    size = fread(&tmp, sizeof(tmp), 1, stream);
+
+    if (size != 1) {
+        return feof(stream) ? IRE_ERROR_END_OF_FILE : IRE_ERROR_IO;
+    }
+
+    self = malloc(sizeof(*self) + tmp.size);
+
+    if (self == NULL) {
+        return IRE_ERROR_OUT_OF_MEMORY;
+    }
+
+    memcpy(self, &tmp, sizeof(tmp));
+
+    size = fread(self->data, 1, self->size, stream);
+
+    if (size != self->size) {
+        free(self);
+
+        return feof(stream) ? IRE_ERROR_END_OF_FILE : IRE_ERROR_IO;
+    }
+
+    return IRE_OK;
 }
 
 
