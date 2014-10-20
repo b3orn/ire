@@ -97,7 +97,7 @@ ire_cpu_run(ire_cpu_t *self) {
         return IRE_ERROR_NULL_POINTER;
     }
 
-    for (;;) {
+    while (!(self->registers[IRE_RF] & IRE_FLAGS_POWER)) {
         error = ire_cpu_step(self);
 
         if (error != IRE_OK) {
@@ -115,7 +115,7 @@ ire_cpu_step(ire_cpu_t *self) {
     ire_opcode_t opcode;
     ire_instruction_t *instruction;
     ire_instruction_handler_t handler;
-    uint16_t rip;
+    uint16_t rip, rsp, flags;
 
     if (self == NULL) {
         return IRE_ERROR_NULL_POINTER;
@@ -124,8 +124,23 @@ ire_cpu_step(ire_cpu_t *self) {
     opcode = 0;
 
     rip = self->registers[IRE_RIP];
+    rsp = self->registers[IRE_RSP];
+    flags = self->registers[IRE_RF];
 
-    self->registers[IRE_RIP] += 2;
+    if (flags & IRE_FLAGS_INTERRUPTS_ENABLED && flags & IRE_FLAGS_INTERRUPT) {
+        self->registers[IRE_RSP] -= sizeof(rip);
+
+        memcpy(&(self->memory[rsp]), &rip, sizeof(rip));
+
+        memcpy(
+            &rip,
+            &(self->memory[self->interrupt_table + (2 * self->interrupt)]),
+            sizeof(rip));
+
+        flags &= ~(IRE_FLAGS_INTERRUPT);
+    }
+
+    self->registers[IRE_RIP] = rip + 2;
 
     memcpy(&instruction, &(self->memory[rip]), 2);
 

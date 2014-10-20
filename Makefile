@@ -20,7 +20,7 @@ OBJECT_FILES = \
 	$(OBJECT_DIR)/code.o \
 	$(OBJECT_DIR)/data.o \
 	$(OBJECT_DIR)/binary.o \
-	$(OBJECT_DIR)/instruction.o \
+	$(OBJECT_DIR)/instructions.o \
 	$(OBJECT_DIR)/cpu.o
 
 
@@ -65,7 +65,7 @@ $(OBJECT_DIR)/binary.o: $(SOURCE_DIR)/binary.c
 	$(CC) $(CCFLAGS) -I$(INCLUDE_DIR) -o $@ -c $+
 
 
-$(OBJECT_DIR)/instruction.o: $(SOURCE_DIR)/instruction.c
+$(OBJECT_DIR)/instructions.o: $(SOURCE_DIR)/instructions.c
 	$(CC) $(CCFLAGS) -I$(INCLUDE_DIR) -o $@ -c $+
 
 

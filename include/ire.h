@@ -14,7 +14,7 @@
 #include "ire/opcodes.h"
 #include "ire/registers.h"
 #include "ire/flags.h"
-#include "ire/instruction.h"
+#include "ire/instructions.h"
 #include "ire/code.h"
 #include "ire/data.h"
 #include "ire/binary.h"
