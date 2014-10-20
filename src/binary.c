@@ -4,11 +4,27 @@
 IRE_API(ire_error_t)
 ire_binary_create(ire_data_t *data, ire_code_t *code,
                   ire_binary_t **destination) {
+    ire_binary_t *self;
+
     if (data == NULL || code == NULL || destination == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
 
-    return IRE_ERROR_NOT_IMPLEMENTED;
+    self = malloc(sizeof(*self));
+
+    if (self == NULL) {
+        return IRE_ERROR_OUT_OF_MEMORY;
+    }
+
+    memcpy(self->magic, "ire", 4);
+
+    self->version = IRE_VERSION;
+    self->data = data;
+    self->code = code;
+
+    *destination = self;
+
+    return IRE_OK;
 }
 
 

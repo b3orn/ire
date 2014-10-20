@@ -95,7 +95,6 @@ struct ire_data {
 struct ire_binary {
     uint8_t magic[4];
     uint32_t version;
-    uint64_t size;
     ire_data_t *data;
     ire_code_t *code;
 };
