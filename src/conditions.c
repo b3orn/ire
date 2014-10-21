@@ -24,10 +24,10 @@ ire_conditions_check(uint8_t condition, ire_cpu_t *cpu) {
         case IRE_CONDITIONS_GREATER_EQUAL:
             return rc & (1 << 1) || rc & (1 << 0) ? IRE_OK : IRE_EXIT;
 
-        case IRE_CONDITIONS_LOWER:
+        case IRE_CONDITIONS_LESS:
             return rc & (1 << 2) ? IRE_OK : IRE_EXIT;
 
-        case IRE_CONDITIONS_LOWER_EQUAL:
+        case IRE_CONDITIONS_LESS_EQUAL:
             return rc & (1 << 2) || rc & (1 << 0) ? IRE_OK : IRE_EXIT;
 
         case IRE_CONDITIONS_ABOVE:

@@ -182,14 +182,16 @@ struct ire_instruction_irt {
 struct ire_instruction_ret {
     uint16_t group: 2;
     uint16_t opcode: 6;
-    uint16_t padding: 8;
+    uint16_t padding: 4;
+    uint16_t condition: 4;
 };
 
 
 struct ire_instruction_iret {
     uint16_t group: 2;
     uint16_t opcode: 6;
-    uint16_t padding: 8;
+    uint16_t padding: 4;
+    uint16_t condition: 4;
 };
 
 
