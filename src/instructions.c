@@ -67,9 +67,16 @@ ire_instruction_handler_nop(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_cpy(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_cpy_t cpy;
+    uint16_t value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    cpy = instruction->cpy;
+    value = cpu->registers[cpy.source];
+    cpu->registers[cpy.destination] = value;
 
     return IRE_OK;
 }
@@ -77,9 +84,17 @@ ire_instruction_handler_cpy(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_sto(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_sto_t sto;
+    uint16_t value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    sto = instruction->sto;
+    value = cpu->registers[sto.source];
+
+    memcpy(&(cpu->memory[sto.destination]), &value, sizeof(value));
 
     return IRE_OK;
 }
@@ -87,9 +102,18 @@ ire_instruction_handler_sto(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_lod(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_lod_t lod;
+    uint16_t value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    lod = instruction->lod;
+
+    memcpy(&value, &(cpu->memory[lod.source]), sizeof(value));
+
+    cpu->registers[lod.destination] = value;
 
     return IRE_OK;
 }
@@ -97,9 +121,20 @@ ire_instruction_handler_lod(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_psh(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_psh_t psh;
+    uint16_t value, rsp;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    psh = instruction->psh;
+    value = cpu->registers[psh.source];
+    rsp = cpu->registers[IRE_RSP] - sizeof(value);
+
+    memcpy(&(cpu->memory[rsp]), &value, sizeof(value));
+
+    cpu->registers[IRE_RSP] = rsp;
 
     return IRE_OK;
 }
@@ -107,9 +142,20 @@ ire_instruction_handler_psh(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_pop(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_pop_t pop;
+    uint16_t value, rsp;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    pop = instruction->pop;
+    rsp = cpu->registers[IRE_RSP];
+
+    memcpy(&value, &(cpu->memory[rsp]), sizeof(value));
+
+    cpu->registers[pop.destination] = value;
+    cpu->registers[IRE_RSP] = rsp + sizeof(value);
 
     return IRE_OK;
 }
@@ -117,9 +163,27 @@ ire_instruction_handler_pop(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_cal(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_cal_t cal;
+    uint16_t value, rip, rsp;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    cal = instruction->cal;
+
+    if (ire_conditions_check(cal.condition, cpu) != IRE_OK) {
+        return IRE_OK;
+    }
+
+    rip = cpu->registers[IRE_RIP];
+    rsp = cpu->registers[IRE_RSP] - sizeof(rip);
+    value = cpu->registers[cal.target];
+
+    memcpy(&(cpu->memory[rsp]), &rip, sizeof(rip));
+
+    cpu->registers[IRE_RSP] = rsp;
+    cpu->registers[IRE_RIP] = value;
 
     return IRE_OK;
 }
@@ -147,9 +211,18 @@ ire_instruction_handler_irt(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_ret(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    uint16_t value, rsp;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    rsp = cpu->registers[IRE_RSP];
+
+    memcpy(&value, &(cpu->memory[rsp]), sizeof(value));
+
+    cpu->registers[IRE_RIP] = value;
+    cpu->registers[IRE_RSP] = rsp + sizeof(value);
 
     return IRE_OK;
 }
@@ -157,9 +230,18 @@ ire_instruction_handler_ret(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_iret(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    uint16_t value, rsp;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    rsp = cpu->registers[IRE_RSP];
+
+    memcpy(&value, &(cpu->memory[rsp]), sizeof(value));
+
+    cpu->registers[IRE_RIP] = value;
+    cpu->registers[IRE_RSP] = rsp + sizeof(value);
 
     return IRE_OK;
 }

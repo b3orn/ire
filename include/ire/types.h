@@ -157,101 +157,159 @@ struct ire_instruction_pop {
 
 struct ire_instruction_cal {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t condition: 4;
+    uint16_t target: 4;
 };
 
 
 struct ire_instruction_jmp {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t condition: 4;
+    uint16_t target: 4;
 };
 
 
 struct ire_instruction_irt {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t condition: 4;
+    uint16_t interrupt: 4;
 };
 
 
 struct ire_instruction_ret {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t padding: 8;
 };
 
 
 struct ire_instruction_iret {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t padding: 8;
 };
 
 
 struct ire_instruction_cmp {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_add {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_sub {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_mul {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_div {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_mod {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_neg {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t padding: 4;
+    uint16_t destination: 4;
 };
 
 
 struct ire_instruction_and {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_or {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_xor {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_not {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t padding: 4;
+    uint16_t destination: 4;
 };
 
 
 struct ire_instruction_shl {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_shr {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_rol {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
 struct ire_instruction_ror {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t left: 4;
+    uint16_t right: 4;
 };
 
 
