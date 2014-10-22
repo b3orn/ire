@@ -105,7 +105,7 @@ ire_cpu_run(ire_cpu_t *self) {
         }
     }
 
-    return IRE_OK;
+    return self->registers[IRE_R4];
 }
 
 
