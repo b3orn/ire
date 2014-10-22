@@ -317,121 +317,192 @@ struct ire_instruction_ror {
 
 struct ire_instruction_in {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t destination: 4;
+    uint16_t source: 4;
 };
 
 
 struct ire_instruction_out {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t destination: 4;
+    uint16_t source: 4;
 };
 
 
 struct ire_instruction_hlt {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t padding: 4;
+    uint16_t mode: 4;
 };
 
 
 struct ire_instruction_hlti {
     uint16_t group: 2;
+    uint16_t opcode: 6;
+    uint16_t mode: 8;
 };
 
 
 struct ire_instruction_cmpi {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_addi {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_subi {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_muli {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_divi {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_modi {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_andi {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_ori {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_xori {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_shli {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_shri {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_roli {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_rori {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t right: 6;
+    uint16_t left: 4;
 };
 
 
 struct ire_instruction_ini {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t destination: 6;
+    uint16_t source: 4;
 };
 
 
 struct ire_instruction_outi {
     uint16_t group: 2;
+    uint16_t opcode: 4;
+    uint16_t source: 6;
+    uint16_t destination: 4;
 };
 
 
 struct ire_instruction_lodi {
     uint16_t group: 2;
+    uint16_t opcode: 3;
+    uint16_t destination: 3;
+    uint16_t value: 8;
 };
 
 
 struct ire_instruction_esc {
     uint16_t group: 2;
+    uint16_t opcode: 3;
+    uint16_t device: 5;
+    uint16_t operation: 6;
 };
 
 
 struct ire_instruction_cali {
     uint16_t group: 2;
+    uint16_t opcode: 3;
+    uint16_t rotation: 3;
+    uint16_t value: 8;
 };
 
 
 struct ire_instruction_irti {
     uint16_t group: 2;
+    uint16_t opcode: 3;
+    uint16_t interrupt: 11;
 };
 
 
 struct ire_instruction_jmpi {
     uint16_t group: 2;
+    uint16_t opcode: 3;
+    uint16_t condition: 4;
+    uint16_t direction: 1;
+    uint16_t target: 6;
 };
 
 
