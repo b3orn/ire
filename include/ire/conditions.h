@@ -15,6 +15,7 @@
 #define IRE_CONDITIONS_FLAG_INTERRUPT 0x0b
 #define IRE_CONDITIONS_FLAG_OVERFLOW  0x0c
 #define IRE_CONDITIONS_FLAG_CARRY     0x0d
+#define IRE_CONDITIONS_FLAG_BORROW    0x0d
 
 
 IRE_API(ire_error_t) ire_conditions_check(

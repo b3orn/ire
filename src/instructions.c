@@ -313,9 +313,27 @@ ire_instruction_handler_cmp(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_add(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_add_t add;
+    uint16_t left, right;
+    uint32_t value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    add = instruction->add;
+    left = cpu->registers[add.left];
+    right = cpu->registers[add.right];
+
+    value = left + right;
+
+    if ((value & 0xffff) == value) {
+        cpu->registers[IRE_RF] &= ~(IRE_FLAGS_CARRY);
+    } else {
+        cpu->registers[IRE_RF] |= IRE_FLAGS_CARRY;
+    }
+
+    cpu->registers[add.left] = value & 0xffff;
 
     return IRE_OK;
 }
@@ -323,9 +341,27 @@ ire_instruction_handler_add(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_sub(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_sub_t sub;
+    uint16_t left, right;
+    uint32_t value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    sub = instruction->sub;
+    left = cpu->registers[sub.left];
+    right = cpu->registers[sub.right];
+
+    value = left - right;
+
+    if ((value & 0xffff) == value) {
+        cpu->registers[IRE_RF] &= ~(IRE_FLAGS_CARRY);
+    } else {
+        cpu->registers[IRE_RF] |= IRE_FLAGS_BORROW;
+    }
+
+    cpu->registers[sub.left] = value & 0xffff;
 
     return IRE_OK;
 }
@@ -373,9 +409,19 @@ ire_instruction_handler_neg(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_and(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_and_t and;
+    uint16_t left, right, value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    and = instruction->and;
+    left = cpu->registers[and.left];
+    right = cpu->registers[and.right];
+    value = left & right;
+
+    cpu->registers[and.left] = value;
 
     return IRE_OK;
 }
@@ -383,9 +429,19 @@ ire_instruction_handler_and(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_or(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_or_t or;
+    uint16_t left, right, value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    or = instruction->or;
+    left = cpu->registers[or.left];
+    right = cpu->registers[or.right];
+    value = left | right;
+
+    cpu->registers[or.left] = value;
 
     return IRE_OK;
 }
@@ -393,9 +449,19 @@ ire_instruction_handler_or(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_xor(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_xor_t xor;
+    uint16_t left, right, value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    xor = instruction->xor;
+    left = cpu->registers[xor.left];
+    right = cpu->registers[xor.right];
+    value = left ^ right;
+
+    cpu->registers[xor.left] = value;
 
     return IRE_OK;
 }
@@ -403,9 +469,17 @@ ire_instruction_handler_xor(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_not(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_not_t not;
+    uint16_t value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    not = instruction->not;
+    value = cpu->registers[not.destination];
+
+    cpu->registers[not.destination] = ~value;
 
     return IRE_OK;
 }
@@ -413,9 +487,19 @@ ire_instruction_handler_not(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_shl(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_shl_t shl;
+    uint16_t left, right, value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    shl = instruction->shl;
+    left = cpu->registers[shl.left];
+    right = cpu->registers[shl.right];
+    value = (uint16_t)(left << right);
+
+    cpu->registers[shl.left] = value;
 
     return IRE_OK;
 }
@@ -423,9 +507,19 @@ ire_instruction_handler_shl(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_shr(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_shr_t shr;
+    uint16_t left, right, value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    shr = instruction->shr;
+    left = cpu->registers[shr.left];
+    right = cpu->registers[shr.right];
+    value = left >> right;
+
+    cpu->registers[shr.left] = value;
 
     return IRE_OK;
 }
@@ -433,9 +527,19 @@ ire_instruction_handler_shr(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_rol(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_rol_t rol;
+    uint16_t left, right, value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    rol = instruction->rol;
+    left = cpu->registers[rol.left];
+    right = cpu->registers[rol.right];
+    value = (uint16_t)(left >> right | left << (16 - right));
+
+    cpu->registers[rol.left] = value;
 
     return IRE_OK;
 }
@@ -443,9 +547,19 @@ ire_instruction_handler_rol(ire_instruction_t *instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_ror(ire_instruction_t *instruction, ire_cpu_t *cpu) {
+    ire_instruction_ror_t ror;
+    uint16_t left, right, value;
+
     if (instruction == NULL || cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
+
+    ror = instruction->ror;
+    left = cpu->registers[ror.left];
+    right = cpu->registers[ror.right];
+    value = (uint16_t)(left << right | left >> (16 - right));
+
+    cpu->registers[ror.left] = value;
 
     return IRE_OK;
 }
