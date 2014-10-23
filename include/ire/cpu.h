@@ -17,7 +17,8 @@ IRE_API(ire_error_t) ire_cpu_load_argv(
 
 
 IRE_API(ire_error_t) ire_cpu_run(
-    ire_cpu_t *self);
+    ire_cpu_t *self,
+    uint16_t *result);
 
 
 IRE_API(ire_error_t) ire_cpu_step(

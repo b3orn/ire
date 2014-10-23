@@ -15,6 +15,8 @@ ire_cpu_create(ire_binary_t *binary, ire_cpu_t **destination) {
         return IRE_ERROR_OUT_OF_MEMORY;
     }
 
+    memset(self->registers, 0, sizeof(self->registers));
+
     self->registers[IRE_RIP] = binary->code->entry;
     self->registers[IRE_RSP] = binary->code->stack_base;
 
@@ -90,10 +92,10 @@ ire_cpu_load_argv(ire_cpu_t *self, int argc, char **argv) {
 
 
 IRE_API(ire_error_t)
-ire_cpu_run(ire_cpu_t *self) {
+ire_cpu_run(ire_cpu_t *self, uint16_t *result) {
     ire_error_t error;
 
-    if (self == NULL) {
+    if (self == NULL || result == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
 
@@ -105,7 +107,9 @@ ire_cpu_run(ire_cpu_t *self) {
         }
     }
 
-    return self->registers[IRE_R4];
+    *result = self->registers[IRE_R4];
+
+    return IRE_OK;
 }
 
 
@@ -113,7 +117,7 @@ IRE_API(ire_error_t)
 ire_cpu_step(ire_cpu_t *self) {
     ire_error_t error;
     ire_opcode_t opcode;
-    ire_instruction_t *instruction;
+    ire_instruction_t instruction;
     ire_instruction_handler_t handler;
     uint16_t rip, rsp, flags;
 
@@ -144,25 +148,25 @@ ire_cpu_step(ire_cpu_t *self) {
 
     memcpy(&instruction, &(self->memory[rip]), 2);
 
-    switch (instruction->generic >> 14) {
+    switch (instruction.generic >> 14) {
         case 0x00:
-            opcode = (instruction->generic >> 8) & 0xff;
+            opcode = (instruction.generic >> 8) & 0xff;
             break;
 
         case 0x01:
-            opcode = (instruction->generic >> 8) & 0xfc;
+            opcode = (instruction.generic >> 8) & 0xfc;
             break;
 
         case 0x02:
         case 0x03:
-            opcode = (instruction->generic >> 8) & 0xf8;
+            opcode = (instruction.generic >> 8) & 0xf8;
             break;
 
     }
 
     handler = ire_instruction_handler_table[opcode];
 
-    error = handler(instruction, self);
+    error = handler(&instruction, self);
 
     if (error != IRE_OK) {
         return error;

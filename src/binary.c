@@ -70,6 +70,8 @@ ire_binary_create_from_file(FILE *stream, ire_binary_t **destination) {
         goto fail;
     }
 
+    *destination = self;
+
     return IRE_OK;
 
 fail:
