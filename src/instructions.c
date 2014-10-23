@@ -660,9 +660,8 @@ ire_instruction_handler_cmpi(ire_instruction_t instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_addi(ire_instruction_t instruction, ire_cpu_t *cpu) {
-    uint8_t i;
-    uint16_t left, right, rf;
-    uint32_t value, carry;
+    uint16_t left, right, rf, carry;
+    int32_t value;
 
     if (cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
@@ -672,14 +671,9 @@ ire_instruction_handler_addi(ire_instruction_t instruction, ire_cpu_t *cpu) {
     left = cpu->registers[IRE_INSTRUCTION_ADDI_LEFT(instruction)];
     right = IRE_INSTRUCTION_ADDI_RIGHT(instruction);
     carry = rf & IRE_FLAGS_CARRY ? 1 : 0;
-    value = 0;
+    value = left + right + carry;
 
-    for (i = 0; i < (8 * sizeof(left)); ++i) {
-        value |= (left & (1 << i)) ^ (right & (1 << i)) ^ (carry & (1 << i));
-        carry = (uint32_t)(((left & (1 << i)) & (right & (1 << i))) << 1);
-    }
-
-    if (carry) {
+    if ((value & 0xffff) != value) {
         cpu->registers[IRE_RF] |= IRE_FLAGS_CARRY;
         cpu->registers[IRE_RF] |= IRE_FLAGS_OVERFLOW;
     } else {
@@ -695,9 +689,8 @@ ire_instruction_handler_addi(ire_instruction_t instruction, ire_cpu_t *cpu) {
 
 IRE_API(ire_error_t)
 ire_instruction_handler_subi(ire_instruction_t instruction, ire_cpu_t *cpu) {
-    uint8_t i;
-    uint16_t left, right, rf;
-    uint32_t value, carry;
+    uint16_t left, right, rf, borrow;
+    int32_t value;
 
     if (cpu == NULL) {
         return IRE_ERROR_NULL_POINTER;
@@ -705,16 +698,11 @@ ire_instruction_handler_subi(ire_instruction_t instruction, ire_cpu_t *cpu) {
 
     rf = cpu->registers[IRE_RF];
     left = cpu->registers[IRE_INSTRUCTION_SUBI_LEFT(instruction)];
-    right = -(cpu->registers[IRE_INSTRUCTION_SUBI_RIGHT(instruction)]);
-    carry = rf & IRE_FLAGS_CARRY ? 1 : 0;
-    value = 0;
+    right = IRE_INSTRUCTION_SUBI_RIGHT(instruction);
+    borrow = rf & IRE_FLAGS_BORROW ? 1 : 0;
+    value = left - right - borrow;
 
-    for (i = 0; i < (8 * sizeof(left)); ++i) {
-        value |= (left & (1 << i)) ^ (right & (1 << i)) ^ (carry & (1 << i));
-        carry = (uint32_t)(((left & (1 << i)) & (right & (1 << i))) << 1);
-    }
-
-    if (carry) {
+    if ((value & 0xffff) != value) {
         cpu->registers[IRE_RF] |= IRE_FLAGS_BORROW;
         cpu->registers[IRE_RF] |= IRE_FLAGS_OVERFLOW;
     } else {
