@@ -98,8 +98,9 @@ ire_cpu_run(ire_cpu_t *self, uint16_t *result) {
     if (self == NULL || result == NULL) {
         return IRE_ERROR_NULL_POINTER;
     }
-
-    while (!(self->registers[IRE_RF] & IRE_FLAGS_POWER)) {
+    int i;
+    /*while (!(self->registers[IRE_RF] & IRE_FLAGS_POWER)) {*/
+    for (i = 0; i < 8; ++i) {
         error = ire_cpu_step(self);
 
         if (error != IRE_OK) {
@@ -119,7 +120,7 @@ ire_cpu_step(ire_cpu_t *self) {
     ire_opcode_t opcode;
     ire_instruction_t instruction;
     ire_instruction_handler_t handler;
-    uint16_t rip, rsp, flags;
+    uint16_t rip, rsp, rf;
 
     if (self == NULL) {
         return IRE_ERROR_NULL_POINTER;
@@ -129,9 +130,9 @@ ire_cpu_step(ire_cpu_t *self) {
 
     rip = self->registers[IRE_RIP];
     rsp = self->registers[IRE_RSP];
-    flags = self->registers[IRE_RF];
+    rf = self->registers[IRE_RF];
 
-    if (flags & IRE_FLAGS_INTERRUPTS_ENABLED && flags & IRE_FLAGS_INTERRUPT) {
+    if (rf & IRE_FLAGS_INTERRUPTS_ENABLED && rf & IRE_FLAGS_INTERRUPT) {
         self->registers[IRE_RSP] -= sizeof(rip);
 
         memcpy(&(self->memory[rsp]), &rip, sizeof(rip));
@@ -141,32 +142,32 @@ ire_cpu_step(ire_cpu_t *self) {
             &(self->memory[self->interrupt_table + (2 * self->interrupt)]),
             sizeof(rip));
 
-        flags &= ~(IRE_FLAGS_INTERRUPT);
+        rf &= ~(IRE_FLAGS_INTERRUPT);
     }
 
     self->registers[IRE_RIP] = rip + 2;
 
-    memcpy(&instruction, &(self->memory[rip]), 2);
+    memcpy(&instruction, &(self->memory[rip]), sizeof(ire_instruction_t));
 
-    switch (instruction.generic >> 14) {
+    switch (instruction >> 14) {
         case 0x00:
-            opcode = (instruction.generic >> 8) & 0xff;
+            opcode = (instruction >> 8) & 0xff;
             break;
 
         case 0x01:
-            opcode = (instruction.generic >> 8) & 0xfc;
+            opcode = (instruction >> 8) & 0xfc;
             break;
 
         case 0x02:
         case 0x03:
-            opcode = (instruction.generic >> 8) & 0xf8;
+            opcode = (instruction >> 8) & 0xf8;
             break;
 
     }
 
     handler = ire_instruction_handler_table[opcode];
 
-    error = handler(&instruction, self);
+    error = handler(instruction, self);
 
     if (error != IRE_OK) {
         return error;

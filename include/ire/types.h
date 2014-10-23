@@ -1,8 +1,9 @@
 #ifndef IRE_TYPES_H
 #define IRE_TYPES_H
 
-typedef size_t ire_error_t;
-typedef uint8_t ire_opcode_t;
+typedef size_t   ire_error_t;
+typedef uint8_t  ire_opcode_t;
+typedef uint16_t ire_instruction_t;
 
 
 typedef struct ire_code   ire_code_t;
@@ -66,10 +67,8 @@ typedef struct ire_instruction_cali ire_instruction_cali_t;
 typedef struct ire_instruction_irti ire_instruction_irti_t;
 typedef struct ire_instruction_jmpi ire_instruction_jmpi_t;
 
-typedef union ire_instruction ire_instruction_t;
-
 typedef ire_error_t (*ire_instruction_handler_t)(
-    ire_instruction_t *instruction,
+    ire_instruction_t instruction,
     ire_cpu_t *cpu);
 
 
@@ -453,16 +452,16 @@ struct ire_instruction_rori {
 struct ire_instruction_ini {
     uint16_t group: 2;
     uint16_t opcode: 4;
-    uint16_t destination: 6;
-    uint16_t source: 4;
+    uint16_t source: 6;
+    uint16_t destination: 4;
 };
 
 
 struct ire_instruction_outi {
     uint16_t group: 2;
     uint16_t opcode: 4;
-    uint16_t source: 6;
-    uint16_t destination: 4;
+    uint16_t destination: 6;
+    uint16_t source: 4;
 };
 
 
@@ -503,61 +502,6 @@ struct ire_instruction_jmpi {
     uint16_t condition: 4;
     uint16_t direction: 1;
     uint16_t target: 6;
-};
-
-
-union ire_instruction {
-    uint16_t generic;
-    ire_instruction_nop_t  nop;
-    ire_instruction_cpy_t  cpy;
-    ire_instruction_sto_t  sto;
-    ire_instruction_lod_t  lod;
-    ire_instruction_psh_t  psh;
-    ire_instruction_pop_t  pop;
-    ire_instruction_cal_t  cal;
-    ire_instruction_jmp_t  jmp;
-    ire_instruction_irt_t  irt;
-    ire_instruction_ret_t  ret;
-    ire_instruction_iret_t iret;
-    ire_instruction_cmp_t  cmp;
-    ire_instruction_add_t  add;
-    ire_instruction_sub_t  sub;
-    ire_instruction_mul_t  mul;
-    ire_instruction_div_t  div;
-    ire_instruction_mod_t  mod;
-    ire_instruction_neg_t  neg;
-    ire_instruction_and_t  and;
-    ire_instruction_or_t   or;
-    ire_instruction_xor_t  xor;
-    ire_instruction_not_t  not;
-    ire_instruction_shl_t  shl;
-    ire_instruction_shr_t  shr;
-    ire_instruction_rol_t  rol;
-    ire_instruction_ror_t  ror;
-    ire_instruction_in_t   in;
-    ire_instruction_out_t  out;
-    ire_instruction_hlt_t  hlt;
-    ire_instruction_hlti_t hlti;
-    ire_instruction_cmpi_t cmpi;
-    ire_instruction_addi_t addi;
-    ire_instruction_subi_t subi;
-    ire_instruction_muli_t muli;
-    ire_instruction_divi_t divi;
-    ire_instruction_modi_t modi;
-    ire_instruction_andi_t andi;
-    ire_instruction_ori_t  ori;
-    ire_instruction_xori_t xori;
-    ire_instruction_shli_t shli;
-    ire_instruction_shri_t shri;
-    ire_instruction_roli_t roli;
-    ire_instruction_rori_t rori;
-    ire_instruction_ini_t  ini;
-    ire_instruction_outi_t outi;
-    ire_instruction_lodi_t lodi;
-    ire_instruction_esc_t  esc;
-    ire_instruction_cali_t cali;
-    ire_instruction_irti_t irti;
-    ire_instruction_jmpi_t jmpi;
 };
 
 #endif
