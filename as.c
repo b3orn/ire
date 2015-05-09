@@ -1,0 +1,172 @@
+#include "ire.h"
+
+
+#define IRE_DATA(TYPE, COUNT, VALUE) \
+    ((TYPE)VALUE)
+
+
+#define IRE_OP_NOP() \
+    (IRE_OPCODE_NOP << 8)
+
+#define IRE_OP_CPY(DESTINATION, SOURCE) \
+    (IRE_OPCODE_CPY << 8 | DESTINATION << 4 | SOURCE)
+
+#define IRE_OP_STO(DESTINATION, SOURCE) \
+    (IRE_OPCODE_STO << 8 | DESTINATION << 4 | SOURCE)
+
+#define IRE_OP_LOD(DESTINATION, SOURCE) \
+    (IRE_OPCODE_LOD << 8 | DESTINATION << 4 | SOURCE)
+
+#define IRE_OP_PSH(SOURCE) \
+    (IRE_OPCODE_PSH << 8 | SOURCE)
+
+#define IRE_OP_POP(DESTINATION) \
+    (IRE_OPCODE_POP << 8 | DESTINATION)
+
+#define IRE_OP_CAL(CONDITION, TARGET) \
+    (IRE_OPCODE_CAL  << 8 | CONDITION << 4 | TARGET)
+
+#define IRE_OP_JMP(CONDITION, TARGET) \
+    (IRE_OPCODE_CAL  << 8 | CONDITION << 4 | TARGET)
+
+#define IRE_OP_IRT(CONDITION, INTERRUPT) \
+    (IRE_OPCODE_CAL  << 8 | CONDITION << 4 | INTERRUPT)
+
+#define IRE_OP_RET(CONDITION) \
+    (IRE_OPCODE_RET << 8 | CONDITION)
+
+#define IRE_OP_IRET(CONDITION) \
+    (IRE_OPCODE_IRET << 8 | CONDITION)
+
+#define IRE_OP_CMP(LEFT, RIGHT) \
+    (IRE_OPCODE_CMP << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_ADD(LEFT, RIGHT) \
+    (IRE_OPCODE_ADD << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_SUB(LEFT, RIGHT) \
+    (IRE_OPCODE_SUB << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_MUL(LEFT, RIGHT) \
+    (IRE_OPCODE_MUL << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_DIV(LEFT, RIGHT) \
+    (IRE_OPCODE_DIV << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_MOD(LEFT, RIGHT) \
+    (IRE_OPCODE_MOD << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_NEG(DESTINATION) \
+    (IRE_OPCODE_NEG << 8 | DESTINATION)
+
+#define IRE_OP_AND(LEFT, RIGHT) \
+    (IRE_OPCODE_AND << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_OR(LEFT, RIGHT) \
+    (IRE_OPCODE_OR << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_XOR(LEFT, RIGHT) \
+    (IRE_OPCODE_XOR << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_NOT(DESTINATION) \
+    (IRE_OPCODE_NOT << 8 | DESTINATION)
+
+#define IRE_OP_SHL(LEFT, RIGHT) \
+    (IRE_OPCODE_SHL << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_SHR(LEFT, RIGHT) \
+    (IRE_OPCODE_SHR << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_ROL(LEFT, RIGHT) \
+    (IRE_OPCODE_ROL << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_ROR(LEFT, RIGHT) \
+    (IRE_OPCODE_ROR << 8 | LEFT << 4 | RIGHT)
+
+#define IRE_OP_IN(DESTINATION, SOURCE) \
+    (IRE_OPCODE_IN << 8 | DESTINATION << 4 | SOURCE)
+
+#define IRE_OP_OUT(DESTINATION, SOURCE) \
+    (IRE_OPCODE_OUT << 8 | DESTINATION << 4 | SOURCE)
+
+#define IRE_OP_HLT(MODE) \
+    (IRE_OPCODE_HLT << 8 | MODE)
+
+#define IRE_OP_HLTI(MODE) \
+    (IRE_OPCODE_HLTI << 8 | MODE)
+
+#define IRE_OP_CMPI(LEFT, RIGHT) \
+    (IRE_OPCODE_CMPI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_ADDI(LEFT, RIGHT) \
+    (IRE_OPCODE_ADDI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_SUBI(LEFT, RIGHT) \
+    (IRE_OPCODE_SUBI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_MULI(LEFT, RIGHT) \
+    (IRE_OPCODE_MULI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_DIVI(LEFT, RIGHT) \
+    (IRE_OPCODE_DIVI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_MODI(LEFT, RIGHT) \
+    (IRE_OPCODE_MODI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_ANDI(LEFT, RIGHT) \
+    (IRE_OPCODE_ANDI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_ORI(LEFT, RIGHT) \
+    (IRE_OPCODE_ORI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_XORI(LEFT, RIGHT) \
+    (IRE_OPCODE_XORI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_SHLI(LEFT, RIGHT) \
+    (IRE_OPCODE_SHLI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_SHRI(LEFT, RIGHT) \
+    (IRE_OPCODE_SHRI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_ROLI(LEFT, RIGHT) \
+    (IRE_OPCODE_ROLI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_RORI(LEFT, RIGHT) \
+    (IRE_OPCODE_RORI << 10 | RIGHT << 4 | LEFT)
+
+#define IRE_OP_INI(DESTINATION, SOURCE) \
+    (IRE_OPCODE_INI << 10 | SOURCE << 4 | DESTINATION)
+
+#define IRE_OP_OUTI(DESTINATION, SOURCE) \
+    (IRE_OPCODE_OUTI << 10 | DESTINATION << 4 | SOURCE)
+
+#define IRE_OP_LODI(DESTINATION, VALUE) \
+    (IRE_OPCODE_LODI << 11 | (DESTINATION & 0x7) << 8 | VALUE)
+
+#define IRE_OP_ESC(DEVICE, OPERATION) \
+    (IRE_OPCODE_ESC << 11 | DEVICE << 6 | OPERATION)
+
+#define IRE_OP_CALI(ROTATION, VALUE) \
+    (IRE_OPCODE_CALI << 11 | ROTATION << 8 | VALUE)
+
+#define IRE_OP_IRTI(INTERRUPT) \
+    (IRE_OPCODE_IRTI << 11 | INTERRUPT)
+
+#define IRE_OP_JMPI(CONDITION, DIRECTION, TARGET) \
+    (IRE_OPCODE_JMPI << 11 | CONDITION << 7 | DIRECTION << 6 | TARGET)
+
+
+
+int main(void) {
+    uint16_t code[] = {
+        IRE_OP_NOP(),
+        IRE_OP_NOP(),
+        IRE_OP_NOP(),
+        IRE_OP_NOP(),
+        IRE_OP_XOR(IRE_R4, IRE_R4)
+    };
+    
+    printf("%zd\n", sizeof(code));
+    
+    return 0;
+}
